@@ -1,0 +1,17 @@
+<div class="trackCard">
+  <div class="container">
+    <p-card>
+          <p-toast position="top-center"></p-toast>
+      <div class="field mb-3">
+        <label class="mb-2">Статус</label>
+        <p-dropdown placeholder="Выберите статус" [(ngModel)]="selectedStatus" [options]="statuses" optionLabel="value"></p-dropdown>
+      </div>
+
+      <div class="field">
+        <label class="mb-2">Трек номер</label>
+        <input (keydown.enter)="enter()" pInputText [(ngModel)]="trackNumber" autofocus />
+      </div>
+    </p-card>
+  </div>
+</div>
+

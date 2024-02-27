@@ -1,0 +1,45 @@
+
+<nav class="navbar fixed-top navbar-expand-lg">
+<!--  <div class="userInfo">-->
+<!--    <div class="container login">-->
+<!--      Логин: {{ userInfo.username }}-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="container">
+    <div>
+      <img class="logo" [src]="logoPath" alt="logotype">
+    </div>
+<!--    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--      <span class="navbar-toggler-icon"></span>-->
+<!--    </button>-->
+    <div class="navbar-toggler">
+      <div routerLink="/logout" class="block">
+        <i class="pi pi-sign-out"></i>
+        <span class="text">Выйти</span>
+      </div>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/user/home">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/user/track">Трек-номера</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/user/receipts">Поступления</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/user/profile">Личный кабинет</a>
+        </li>
+      </ul>
+      <div>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/logout">Выйти из системы</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

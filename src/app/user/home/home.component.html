@@ -1,0 +1,19 @@
+<div>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+  <p-toast position="top-center"></p-toast>
+</div>
+<div class="trackPage">
+  <div class="container">
+    <p-card>
+      <div>
+        <span class="welcomeText">Добро пожаловать, {{ userInfo.name }}!</span>
+      </div>
+      <div class="mt-3">
+        <p-button routerLink="/user/track" label="Мои трек номера" icon="pi pi-list" iconPos="left"></p-button>
+      </div>
+      <div class="mt-3">
+        <p-button routerLink="/user/receipts" label="Мои поступления" icon="pi pi-car" iconPos="left"></p-button>
+      </div>
+    </p-card>
+  </div>
+</div>

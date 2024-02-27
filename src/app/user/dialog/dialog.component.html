@@ -1,0 +1,18 @@
+<p-toast position="top-center"></p-toast>
+
+<div class="mt-2">
+  <form (ngSubmit)="onSubmit()" [formGroup]="trackForm">
+    <div class="loginForm container">
+      <div class="p-float-label w-100 mt-3">
+        <input class="form-control" id="float-input" type="text" pInputText formControlName="trackNumber" name="trackNumber">
+        <label for="float-input">Трек номер</label>
+      </div>
+      <div class="p-float-label w-100 mt-4">
+        <textarea class="form-control" id="description" type="text" pInputTextarea formControlName="description" name="description"></textarea>
+        <label for="description">Описание</label>
+      </div>
+      <p-button class="mt-3" type="submit">Добавить</p-button>
+    </div>
+  </form>
+</div>
+

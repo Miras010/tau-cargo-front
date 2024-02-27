@@ -1,0 +1,157 @@
+<div class="trackCard">
+  <div class="container">
+    <!--    <div class="mb-4">-->
+    <!--      <p-card>-->
+    <!--        <div class="p-card-title">-->
+    <!--          Фильтр-->
+    <!--        </div>-->
+    <!--        <div>-->
+    <!--          <label>Фильтровать по</label>-->
+    <!--          <p-dropdown [(ngModel)]="filterBy" optionLabel="value" [options]="statuses" placeholder="Select">-->
+    <!--          </p-dropdown>-->
+    <!--        </div>-->
+    <!--        <div class="field mt-3 mb-3">-->
+    <!--          <p-calendar style="width: 300px;" [(ngModel)]="rangeDates" dateFormat="dd-mm-yy" selectionMode="range" [readonlyInput]="true" inputId="range"></p-calendar>-->
+    <!--        </div>-->
+    <!--        <div>-->
+    <!--          <button (click)="enterFilter()" pRipple pButton>Применить</button>-->
+    <!--        </div>-->
+    <!--      </p-card>-->
+    <!--    </div>-->
+
+
+    <div>
+      <p-toast position="top-center"></p-toast>
+      <div class="card">
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <button pButton pRipple label="Добавить" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <button pButton pRipple label="Удалить"  icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedTracks || !selectedTracks.length"></button>
+              </div>
+            </div>
+          </ng-template>
+        </p-toolbar>
+        <p-table #dt
+                 [value]="receipts"
+                 [lazy]="true"
+                 (onLazyLoad)="loadCustomers($event)"
+                 [rows]="10" [paginator]="true"
+                 [globalFilterFields]="['trackNumber']"
+                 [tableStyle]="{'min-width': '75rem'}"
+                 [(selection)]="selectedTracks"
+                 [rowHover]="true"
+                 [totalRecords]="totalRecords"
+                 [loading]="loading"
+                 [rowsPerPageOptions]="[10,25,50]"
+                 dataKey="_id"
+                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" >
+          <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+              <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal(dt, $event, 'contains')" placeholder="Искать по трек номеру..." />
+                </span>
+
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th pSortableColumn="receiver">Получатель<p-sortIcon field="receiver"></p-sortIcon></th>
+              <th pSortableColumn="weight">Вес<p-sortIcon field="weight"></p-sortIcon></th>
+              <th pSortableColumn="totalSum">Сумма<p-sortIcon field="totalSum"></p-sortIcon></th>
+              <th pSortableColumn="totalNumber">Кол-во треков<p-sortIcon field="totalNumber"></p-sortIcon></th>
+              <th></th>
+            </tr>
+            <!--            <tr>-->
+            <!--              <th style="width: 4rem">-->
+            <!--                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="trackNumber"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="createdDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedInChinaDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="fromChinaToAlmaty"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedInAlmatyDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedByClient"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--            </tr>-->
+          </ng-template>
+          <ng-template pTemplate="body" let-track>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="track"></p-tableCheckbox>
+              </td>
+              <td>{{track.receiver.username}}</td>
+              <td>{{track.weight}}</td>
+              <td>{{track.totalSum}}</td>
+              <td>{{track.totalNumber}}</td>
+              <td>
+                <div class="d-flex">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mx-1" (click)="editProduct(track)"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteProduct(track)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <!--          <ng-template pTemplate="summary">-->
+          <!--            <div class="flex align-items-center justify-content-between">-->
+          <!--              Общее кол-во треков {{receipts ? receipts.length : 0 }}.-->
+          <!--            </div>-->
+          <!--          </ng-template>-->
+        </p-table>
+      </div>
+
+      <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Поступление" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="receiptForm">
+            <div class="field">
+              <label class="mb-2">Получатель</label>
+              <!--              <p-autoComplete formControlName="receiver" [showEmptyMessage]="true" [suggestions]="filteredCountries" (completeMethod)="filterCountry($event)" field="name" [minLength]="1"></p-autoComplete>-->
+              <p-autoComplete formControlName="receiver" [showEmptyMessage]="true" [suggestions]="receivers" (completeMethod)="onLazyLoad($event)" field="username"></p-autoComplete>
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Вес</label>
+              <input formControlName="weight" type="text" pInputText id="weight" required autofocus />
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Сумма</label>
+              <input formControlName="totalSum" type="number" pInputText id="totalSum" required autofocus />
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Кол-во треков</label>
+              <input formControlName="totalNumber" type="number" pInputText id="totalNumber" required autofocus />
+            </div>
+
+          </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+          <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onSubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+    </div>
+  </div>
+
+</div>

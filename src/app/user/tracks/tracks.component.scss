@@ -1,0 +1,101 @@
+.trackPage {
+  //background-color: #EFF3F7;
+  background-color: white;
+  padding-top: 20px;
+  padding-bottom: 120px;
+  margin-top: 100px;
+}
+
+
+.progress-spinner {
+  position: fixed;
+  z-index: 2000;
+  height: 2em;
+  width: 2em;
+  overflow: visible;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-spinner:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.53);
+}
+
+.welcomeText {
+  font-size: 22px;
+  font-weight: 600;
+}
+.cardHeader {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+.cardTitle {
+  font-size: 18px;
+  font-weight: 500;
+}
+.cardBody {
+  padding: 15px;
+}
+.cardDesc {
+  color: gray;
+  font-size: 18px;
+  font-weight: 500;
+}
+.cardSubTitle {
+  font-size: 14px;
+  color: #868686;
+}
+.cardInfoText {
+  font-size: 14px;
+  //font-weight: 600;
+}
+.cardSec {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.trackList i {
+  color: #3B82F6;
+}
+
+.trackCard {
+  background: #ffffff;
+  box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.cardTitle {
+  font-size: 22px;
+  font-weight: 600;
+}
+.cardSec {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.iconSec {
+  margin-right: 10px;
+}
+.iconSec i {
+  color: #3B82F6 !important;
+}

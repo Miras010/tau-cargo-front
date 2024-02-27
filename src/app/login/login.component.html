@@ -1,0 +1,32 @@
+<p-toast position="top-center"></p-toast>
+<div class="cardBack">
+  <div class="mx-3" style="width: 500px;">
+      <div class="loginCard">
+        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+          <div class="loginForm container">
+            <img class="logo" [src]="logoPath" alt="logotype">
+            <div class="p-float-label w-100 mt-4">
+              <p-inputMask styleClass="yourclass" formControlName="phoneNumber" mask="+9 (999) 999-99-99"></p-inputMask>
+              <label>Номер телефона</label>
+            </div>
+            <div class="p-float-label w-100 mt-4 mb-3">
+              <input class="form-control" id="password" type="password" pInputText formControlName="password" name="password">
+              <label for="password">Пароль</label>
+            </div>
+            <button [disabled]="isLoading" pButton type="submit">Авторизоваться</button>
+            <div class="mt-4">
+              <span class="footerSec">
+                У вас нет аккаунта? <a routerLink="/registration">Зарегистрироваться</a>
+              </span>
+            </div>
+            <div class="mt-4">
+              <span class="footerSec">
+                Забыли пароль? <a routerLink="/forgot">Забыл пароль</a>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+

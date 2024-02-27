@@ -1,0 +1,99 @@
+<div class="trackCard">
+  <div class="container">
+    <div>
+      <p-toast position="top-center"></p-toast>
+      <div>
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <div class="mx-2">
+                <button pButton pRipple label="Загрузить" icon="pi pi-file" class="p-button" (click)="openMany()"></button>
+              </div>
+            </div>
+          </ng-template>
+        </p-toolbar>
+        <div class="mb-4">
+          <p-table #FileTable
+                   [value]="files"
+                   [lazy]="true"
+                   (onLazyLoad)="loadFiles($event)"
+                   [rows]="10" [paginator]="true"
+                   [globalFilterFields]="['name']"
+                   [tableStyle]="{'min-width': '75rem'}"
+                   [rowHover]="true"
+                   [totalRecords]="totalFiles"
+                   [loading]="loading"
+                   [rowsPerPageOptions]="[10,25,50]"
+                   dataKey="_id"
+                   currentPageReportTemplate="Показано от {first} до {last} из {totalRecords} всех записей" [showCurrentPageReport]="true" >
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                <div class="mb-4" style="font-size: 20px;">
+                  Загруженные файлы
+                </div>
+                <span class="p-input-icon-left">
+                      <i class="pi pi-search"></i>
+                      <input pInputText type="text" (input)="filterFiles(dt, $event, 'contains')" placeholder="Искать по название файла" />
+                  </span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Название файла</th>
+                <th>Дата загрузки</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-file>
+              <tr>
+                <td>{{file.name}}</td>
+                <td>
+                  {{ getFormattedDate(file.createdDate) }}
+                </td>
+                <td>
+                  {{ file.statusValue }}
+                </td>
+                <td>
+                  {{ getFormattedDate(file.date) }}
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-success mx-1" (click)="downloadFile(file)"></button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <p-dialog [(visible)]="addManyDialog" [style]="{width: '450px'}" header="Добавить данные с документа" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="addManyForm">
+            <div class="field mt-3">
+              <label class="mb-2">Тип</label>
+              <p-dropdown placeholder="Выберите статус"  formControlName="status" [options]="statuses" optionLabel="value"></p-dropdown>
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Дата</label>
+              <p-calendar formControlName="date" dateFormat="dd.mm.yy" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+          </form>
+          <div class="mt-3">
+            <input type="file" class="form-control" (change)="addfile($event)" placeholder="Upload file" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideManyDialog()"></button>
+          <button [disabled]="loading" pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onManySubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+    </div>
+  </div>
+
+</div>

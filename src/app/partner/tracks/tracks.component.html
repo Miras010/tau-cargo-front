@@ -1,0 +1,190 @@
+<div class="trackCard">
+  <div class="container">
+    <!--    <div class="mb-4">-->
+    <!--      <p-card>-->
+    <!--        <div class="p-card-title">-->
+    <!--          Фильтр-->
+    <!--        </div>-->
+    <!--        <div>-->
+    <!--          <label>Фильтровать по</label>-->
+    <!--          <p-dropdown [(ngModel)]="filterBy" optionLabel="value" [options]="statuses" placeholder="Select">-->
+    <!--          </p-dropdown>-->
+    <!--        </div>-->
+    <!--        <div class="field mt-3 mb-3">-->
+    <!--          <p-calendar style="width: 300px;" [(ngModel)]="rangeDates" dateFormat="dd-mm-yy" selectionMode="range" [readonlyInput]="true" inputId="range"></p-calendar>-->
+    <!--        </div>-->
+    <!--        <div>-->
+    <!--          <button (click)="enterFilter()" pRipple pButton>Применить</button>-->
+    <!--        </div>-->
+    <!--      </p-card>-->
+    <!--    </div>-->
+
+
+    <div>
+      <p-toast position="top-center"></p-toast>
+      <div class="card">
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            <div class="row">
+              <div class="col-lg-4 col-sm-12">
+                <button pButton pRipple label="Добавить" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <button pButton pRipple label="Загрузить" icon="pi pi-file" class="p-button" (click)="openMany()"></button>
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <button pButton pRipple label="Удалить"  icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedTracks || !selectedTracks.length"></button>
+              </div>
+            </div>
+          </ng-template>
+        </p-toolbar>
+        <p-table #dt
+                 [value]="tracks"
+                 [lazy]="true"
+                 (onLazyLoad)="loadCustomers($event)"
+                 [rows]="10" [paginator]="true"
+                 [globalFilterFields]="['trackNumber']"
+                 [tableStyle]="{'min-width': '75rem'}"
+                 [(selection)]="selectedTracks"
+                 [rowHover]="true"
+                 [totalRecords]="totalRecords"
+                 [loading]="loading"
+                 [rowsPerPageOptions]="[10,25,50]"
+                 dataKey="_id"
+                 [showCurrentPageReport]="true" >
+          <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+              <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal(dt, $event, 'contains')" placeholder="Искать по трек номеру..." />
+                </span>
+
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th pSortableColumn="trackNumber" style="min-width:15rem">Трек номер<p-sortIcon field="trackNumber"></p-sortIcon></th>
+              <th pSortableColumn="createdDate">Дата создания<p-sortIcon field="createdDate"></p-sortIcon></th>
+              <th pSortableColumn="receivedInChinaDate">ДП на складе в Китае<p-sortIcon field="receivedInChinaDate"></p-sortIcon></th>
+              <th pSortableColumn="fromChinaToAlmaty">Отправлено с Китая в Алматы<p-sortIcon field="fromChinaToAlmaty"></p-sortIcon></th>
+              <th pSortableColumn="receivedInAlmatyDate">ДП на складе в Алматы<p-sortIcon field="receivedInAlmatyDate"></p-sortIcon></th>
+              <th pSortableColumn="receivedByClient">Получено клиентом<p-sortIcon field="receivedByClient"></p-sortIcon></th>
+              <th></th>
+            </tr>
+            <!--            <tr>-->
+            <!--              <th style="width: 4rem">-->
+            <!--                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="trackNumber"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="createdDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedInChinaDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="fromChinaToAlmaty"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedInAlmatyDate"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--              <th>-->
+            <!--                <p-columnFilter type="text" field="receivedByClient"></p-columnFilter>-->
+            <!--              </th>-->
+            <!--            </tr>-->
+          </ng-template>
+          <ng-template pTemplate="body" let-track>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="track"></p-tableCheckbox>
+              </td>
+              <td>{{track.trackNumber}}</td>
+              <td>{{getFormattedDate(track.createdDate)}}</td>
+              <td>{{getFormattedDate(track.receivedInChinaDate)}}</td>
+              <td>{{getFormattedDate(track.fromChinaToAlmaty)}}</td>
+              <td>{{getFormattedDate(track.receivedInAlmatyDate)}}</td>
+              <td>{{getFormattedDate(track.receivedByClient)}}</td>
+              <td>
+                <div class="d-flex">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mx-1" (click)="editProduct(track)"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteProduct(track)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+              Общее кол-во треков {{tracks ? tracks.length : 0 }}.
+            </div>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Трек номер" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="trackForm">
+            <div class="field">
+              <label class="mb-2" for="name">Трек номер</label>
+              <input formControlName="trackNumber" type="text" pInputText id="name" required autofocus />
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения на складе в Китае</label>
+              <p-calendar formControlName="receivedInChinaDate" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата отправления в Алматы</label>
+              <p-calendar formControlName="fromChinaToAlmaty" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения на складе в Алматы</label>
+              <p-calendar formControlName="receivedInAlmatyDate" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения клиентом</label>
+              <p-calendar formControlName="receivedByClient" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+          </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+          <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onSubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="addManyDialog" [style]="{width: '450px'}" header="Добавить данные с документа" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="addManyForm">
+            <div class="field mt-3">
+              <label class="mb-2">Тип</label>
+              <p-dropdown formControlName="status" [options]="statuses" optionLabel="value"></p-dropdown>
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Дата</label>
+              <p-calendar formControlName="date" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+          </form>
+          <div class="mt-3">
+            <input type="file" class="form-control" (change)="addfile($event)" placeholder="Upload file" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideManyDialog()"></button>
+          <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onManySubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+    </div>
+  </div>
+
+</div>

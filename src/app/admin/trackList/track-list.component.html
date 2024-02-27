@@ -1,0 +1,141 @@
+<div class="trackCard">
+  <div class="container">
+    <div>
+      <p-toast position="top-center"></p-toast>
+      <div>
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <div>
+                <button pButton pRipple label="Добавить" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+              </div>
+            </div>
+          </ng-template>
+        </p-toolbar>
+
+        <p-table #dt
+                 [value]="tracks"
+                 [lazy]="true"
+                 (onLazyLoad)="loadTracks($event)"
+                 [rows]="10" [paginator]="true"
+                 [globalFilterFields]="['trackNumber']"
+                 [tableStyle]="{'min-width': '75rem'}"
+                 [(selection)]="selectedTracks"
+                 [rowHover]="true"
+                 [totalRecords]="totalRecords"
+                 [loading]="loading"
+                 [rowsPerPageOptions]="[10,25,50]"
+                 dataKey="_id"
+                 currentPageReportTemplate="Показано от {first} до {last} из {totalRecords} всех записей" [showCurrentPageReport]="true" >
+          <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+              <div class="mb-4" style="font-size: 20px;">
+                Трек коды
+              </div>
+              <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal(dt, $event, 'contains')" placeholder="Искать по трек номеру..." />
+                </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th style="min-width:15rem">Трек номер</th>
+              <th pSortableColumn="createdDate">Дата создания</th>
+              <th pSortableColumn="receivedInChinaDate">ДП на складе в Китае</th>
+              <th pSortableColumn="fromChinaToAlmaty">Отправлено с Китая в Алматы</th>
+              <th pSortableColumn="receivedInAlmatyDate">ДП на складе в Алматы</th>
+              <th pSortableColumn="receivedInAlmatyDate">ДП отправления из Алматы в другой город</th>
+              <th pSortableColumn="receivedByClient">Получено клиентом</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-track>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="track"></p-tableCheckbox>
+              </td>
+              <td>{{track.trackNumber}}</td>
+              <td>{{getFormattedDate(track.createdDate)}}</td>
+              <td>{{getFormattedDate(track.receivedInChinaDate)}}</td>
+              <td>{{getFormattedDate(track.fromChinaToAlmaty)}}</td>
+              <td>{{getFormattedDate(track.receivedInAlmatyDate)}}</td>
+              <td>{{getFormattedDate(track.shippedFromAlmatyDate)}}</td>
+              <td>{{getFormattedDate(track.receivedByClient)}}</td>
+              <td>
+                <div class="d-flex">
+                  <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-success mx-1" (click)="getInfo(track)"></button>
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mx-1" (click)="editProduct(track)"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteProduct(track)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Трек номер" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="trackForm">
+            <div class="field">
+              <label class="mb-2" for="name">Трек номер</label>
+              <input formControlName="trackNumber" type="text" pInputText id="name" required autofocus />
+            </div>
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения на складе в Китае</label>
+              <p-calendar formControlName="receivedInChinaDate" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата отправления в Алматы</label>
+              <p-calendar formControlName="fromChinaToAlmaty" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения на складе в Алматы</label>
+              <p-calendar formControlName="receivedInAlmatyDate" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+
+            <div class="field mt-3">
+              <label class="mb-2">Дата получения клиентом</label>
+              <p-calendar formControlName="receivedByClient" dateFormat="dd.mm.yy" [showTime]="true" hourFormat="24" [showButtonBar]="true"></p-calendar>
+            </div>
+          </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+          <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onSubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+      <p-dialog [(visible)]="ownerDialog" [style]="{width: '900px'}" header="Трек номер" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <table style="width: 100%">
+            <tr>
+              <th>Логин</th>
+              <th>Имя</th>
+              <th>Фамилия</th>
+              <th>Номер телефона</th>
+              <th>Почта</th>
+            </tr>
+            <tr *ngFor="let item of ownerInfo">
+              <th>{{ item.ownerId.username }}</th>
+              <th>{{ item.ownerId.name }}</th>
+              <th>{{ item.ownerId.surname }}</th>
+              <th>{{ item.ownerId.phoneNumber }}</th>
+              <th>{{ item.ownerId.mail }}</th>
+            </tr>
+          </table>
+        </ng-template>
+      </p-dialog>
+
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,81 @@
+.trackPage {
+  //background-color: #EFF3F7;
+  background-color: white;
+  padding-top: 20px;
+  margin-top: 100px;
+  padding-bottom: 120px;
+}
+
+
+.progress-spinner {
+  position: fixed;
+  z-index: 2000;
+  height: 2em;
+  width: 2em;
+  overflow: visible;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-spinner:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.53);
+}
+
+.welcomeText {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 500;
+}
+.cardSubTitle {
+  font-size: 16px;
+  color: gray;
+}
+.cardInfoText {
+  font-size: 16px;
+  font-weight: 600;
+}
+.cardSec {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.iconSec {
+  margin-right: 25px;
+}
+.trackList i {
+  color: #3B82F6;
+}
+
+.card {
+  padding: 20px;
+  background: #cdd5ff;
+  color: #495057;
+  box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+  border-radius: 6px;
+}
+.field {
+  font-size: 18px;
+}
+.field .value {
+  font-weight: bold;
+}
+.p-inputtext {
+  width: 100% !important;
+}

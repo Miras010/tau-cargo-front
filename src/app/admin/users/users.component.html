@@ -1,0 +1,152 @@
+<div class="trackCard">
+  <div class="container">
+      <p-toast position="top-center"></p-toast>
+      <div>
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <button pButton pRipple label="Добавить" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <button pButton pRipple label="Удалить"  icon="pi pi-trash" class="p-button-danger" (click)="deleteSelected()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+              </div>
+            </div>
+<!--            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>-->
+<!--            <button pButton pRipple icon="pi pi-trash" class="p-button-danger" (click)="deleteSelected()" [disabled]="!selectedUsers || !selectedUsers.length"></button>-->
+          </ng-template>
+
+<!--          <ng-template pTemplate="right">-->
+<!--            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>-->
+<!--            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>-->
+<!--          </ng-template>-->
+        </p-toolbar>
+
+        <p-table #dt
+                 [value]="users"
+                 [lazy]="true"
+                 (onLazyLoad)="loadData($event)"
+                 [rows]="10"
+                 [paginator]="true"
+                 [globalFilterFields]="['trackNumber']"
+                 [tableStyle]="{'min-width': '75rem'}"
+                 [(selection)]="selectedUsers"
+                 [rowHover]="true"
+                 [totalRecords]="totalRecords"
+                 [loading]="loading"
+                 [rowsPerPageOptions]="[10,25,50]"
+                 dataKey="_id"
+                 currentPageReportTemplate="Показано от {first} до {last} из {totalRecords} всех записей" [showCurrentPageReport]="true" >
+          <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+              <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal(dt, $event, 'contains')" placeholder="Искать" />
+                </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th pSortableColumn="trackNumber" style="min-width:15rem">Логин</th>
+              <th pSortableColumn="receivedInChinaDate">Имя</th>
+              <th pSortableColumn="fromChinaToAlmaty">Фамилия</th>
+              <th pSortableColumn="receivedInAlmatyDate">Номер телефона</th>
+              <th pSortableColumn="receivedByClient">Email</th>
+              <th pSortableColumn="isActive">Активирован</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="user"></p-tableCheckbox>
+              </td>
+              <td>{{user.username}}</td>
+              <td>{{user.name}}</td>
+              <td>{{user.surname}}</td>
+              <td>{{user.phoneNumber}}</td>
+              <td>{{user.mail}}</td>
+              <td>{{user.isActive ? 'Да' : 'Нет'}}</td>
+              <td>
+                <div class="d-flex">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mx-1" (click)="edit(user)"></button>
+                  <button pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-success mx-1" (click)="openChangePassword(user)"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteProduct(user)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Редактировать данные пользователя" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+          <form [formGroup]="userForm">
+            <div class="p-float-label w-100 mt-3">
+              <input class="form-control" id="float-input" type="text" pInputText formControlName="username" name="login">
+              <label for="float-input">Логин</label>
+            </div>
+            <div class="p-float-label w-100 mt-4">
+              <input class="form-control" id="name" type="text" pInputText formControlName="name" name="name">
+              <label for="name">Имя</label>
+            </div>
+            <div class="p-float-label w-100 mt-4">
+              <input class="form-control" id="surname" type="text" pInputText formControlName="surname" name="surname">
+              <label for="surname">Фамилия</label>
+            </div>
+            <div class="p-float-label w-100 mt-4 mb-2">
+              <p-inputMask formControlName="phoneNumber" mask="+9 (999) 999-99-99"></p-inputMask>
+              <label>Номер телефона</label>
+            </div>
+            <div class="p-float-label w-100 mt-4 mb-2">
+              <input class="form-control" id="mail" type="mail" pInputText formControlName="mail" name="mail">
+              <label for="mail">Почта</label>
+            </div>
+            <div *ngIf="editingType !== 'edit'" class="w-100 mt-4 mb-2">
+              <p-dropdown [options]="roles" formControlName="roles" placeholder="Выберите роль" optionLabel="text" [showClear]="true"></p-dropdown>
+            </div>
+            <div *ngIf="editingType !== 'edit'" class="p-float-label w-100 mt-4 mb-2">
+              <input class="form-control" id="password" type="password" pInputText formControlName="password" name="password">
+              <label>Пароль</label>
+            </div>
+            <div class="p-float-label w-100 mt-4 mb-2">
+              <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+              <label class="mx-3">Активировать пользователя</label>
+            </div>
+          </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+          <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="onSubmit()" class="p-button-text"></button>
+        </ng-template>
+      </p-dialog>
+
+    <p-dialog [(visible)]="changePasswordDialog" [style]="{width: '450px'}" header="Сменить пароль" [modal]="true" styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <form [formGroup]="changePasswordForm">
+          <div class="p-float-label w-100 mt-4 mb-2">
+            <input class="form-control" id="password2" type="password" pInputText formControlName="password" name="password">
+            <label>Пароль</label>
+          </div>
+          <div class="p-float-label w-100 mt-4 mb-2">
+            <input class="form-control" id="password3" type="password" pInputText formControlName="confirmPassword" name="password">
+            <label>Повторите пароль</label>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hidePasswordDialog()"></button>
+        <button pButton pRipple type="submit" label="Save" icon="pi pi-check" (click)="changePassword()" class="p-button-text"></button>
+      </ng-template>
+    </p-dialog>
+
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  </div>
+
+</div>

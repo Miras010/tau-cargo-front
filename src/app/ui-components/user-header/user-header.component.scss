@@ -1,0 +1,44 @@
+.logo {
+  margin-right: 30px;
+  width: 100px;
+}
+.navbar {
+  font-size: 17px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0
+}
+.userInfo {
+  font-size: 18px;
+  background-color: #3B82F6;
+  color: white;
+  width: 100%;
+  padding: 10px 0;
+}
+.login {
+  display: flex;
+  justify-content: center
+}
+.block {
+  max-width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.block i {
+  font-size: 22px;
+  //color: #babffd;
+  color: gray;
+  text-decoration: none;
+}
+.block .text {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  //color: #babffd;
+  color: gray;
+
+  text-decoration: none;
+}
